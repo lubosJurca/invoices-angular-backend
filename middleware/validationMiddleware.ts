@@ -16,7 +16,7 @@ const withValidationErrors = (validateValues: any) => {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         const errorMessages = errors.array().map((error) => error.msg);
-        if (errorMessages[0].startsWith('no job')) {
+        if (errorMessages[0].toLowerCase().startsWith('no invoice')) {
           throw new NotFoundError(errorMessages[0]);
         }
         if (errorMessages[0].startsWith('not authorized')) {
