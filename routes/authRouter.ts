@@ -13,7 +13,7 @@ router.post(
 
 // ----------VALIDATE TOKEN -----------------
 router.get("/validate-token", verifyToken, (req: Request, res: Response) => {
-  res.status(200).send({ message: "Token validation successfull", success: true });
+  res.status(200).send({ message: "Token validation successful", success: true });
 });
 
 // ----------LOGOUT USER -----------------
