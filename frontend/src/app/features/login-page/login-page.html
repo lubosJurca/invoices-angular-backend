@@ -1,0 +1,56 @@
+<section class="flex w-full min-h-screen justify-center items-center">
+  <p-card class="min-w-80">
+    <ng-template #title>
+      <h2 class="text-3xl text-center">Login</h2>
+    </ng-template>
+    <form
+      [formGroup]="loginForm"
+      (ngSubmit)="onSubmit()"
+      class="flex flex-col gap-2 mt-4"
+    >
+      <p-floatlabel variant="on">
+        <input
+          type="email"
+          pInputText
+          name="email"
+          class="w-full"
+          id="email"
+          formControlName="email"
+        />
+        <label for="email">Email</label>
+      </p-floatlabel>
+
+      @if(hasError('email')) {
+      <div class="text-red-600 mb-2">Wrong email format</div>
+      }
+
+      <p-floatlabel variant="on">
+        <p-password
+          formControlName="password"
+          [feedback]="false"
+          [toggleMask]="true"
+          fluid
+        />
+        <label for="password">Password</label>
+      </p-floatlabel>
+
+      @if(hasError('password')) {
+      <div class="text-red-600 mb-2">
+        Password must be at least 8 characters long
+      </div>
+      }
+      <p-button
+        label="Login"
+        styleClass="w-full"
+        type="submit"
+        [disabled]="!loginForm.valid"
+      />
+    </form>
+    <ng-template #footer>
+      <p class="text-center">
+        No account yet?
+        <p-button link> <a routerLink="/sign-up">Sign Up</a></p-button>
+      </p>
+    </ng-template>
+  </p-card>
+</section>
