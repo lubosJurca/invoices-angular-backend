@@ -1,0 +1,80 @@
+<section class="flex w-full min-h-screen justify-center items-center">
+  <p-card class="min-w-80">
+    <ng-template #title>
+      <h2 class="text-3xl text-center">Sign Up</h2>
+    </ng-template>
+    <form
+      [formGroup]="registerForm"
+      (ngSubmit)="onSubmit()"
+      class="flex flex-col gap-2 mt-4"
+    >
+      <p-floatlabel variant="on">
+        <input
+          type="text"
+          pInputText
+          name="name"
+          class="w-full"
+          id="name"
+          formControlName="name"   
+        />
+        <label for="name">Name</label>
+      </p-floatlabel>
+
+      @if(hasError('name')) {
+      <div class="text-red-600 mb-2 ">Name must contain at least 3 characters</div>
+      }
+
+      <p-floatlabel variant="on">
+        <input
+          type="email"
+          pInputText
+          name="email"
+          class="w-full"
+          id="email"
+          formControlName="email"
+        />
+        <label for="email">Email</label>
+      </p-floatlabel>
+
+        @if(hasError('email')) {
+      <div class="text-red-600 mb-2 ">Wrong email format</div>
+      }
+
+      <p-floatlabel variant="on">
+        <p-password
+          formControlName="password"
+          [feedback]="false"
+          [toggleMask]="true"
+          fluid
+        />
+        <label for="password">Password</label>
+      </p-floatlabel>
+
+          @if(hasError('password')) {
+      <div class="text-red-600 mb-2 ">Password must be at least 8 characters long</div>
+      }
+
+      <p-floatlabel variant="on">
+        <p-password
+          formControlName="confirmPassword"
+          [feedback]="false"
+          [toggleMask]="true"
+          fluid
+        />
+        <label for="confirmPassword">Confirm Password</label>
+      </p-floatlabel>
+
+      @if( hasError('confirmPassword') && registerForm.errors?.['passwordMismatch']){
+      <div class="text-red-600 mb-2 ">Passwords do not match</div>
+      }
+
+      <p-button label="Sign Up" styleClass="w-full" type="submit" [disabled]="!registerForm.valid" />
+    </form>
+    <ng-template #footer>
+      <p class="text-center">
+        Already a member?
+        <p-button link> <a routerLink="/login">Login</a></p-button>
+      </p>
+    </ng-template>
+  </p-card>
+</section>
