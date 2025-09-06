@@ -1,17 +1,20 @@
-import express, { Express } from 'express';
-import dotenv from 'dotenv';
-import morgan from 'morgan';
-import mongoose from 'mongoose';
-import cors from 'cors';
-dotenv.config();
-import errorHandlerMiddleware from './middleware/errorHandlerMiddleware.js';
-import cookieParser from 'cookie-parser';
+// import dotenv from "dotenv";
+// dotenv.config();
+import "dotenv/config";
+import express, { Express } from "express";
+import morgan from "morgan";
+import mongoose from "mongoose";
+import cors from "cors";
 
-import userRouter from './routes/userRouter.js';
-import invoiceRouter from './routes/invoiceRouter.js';
-import authRouter from './routes/authRouter.js';
-import path, { dirname } from 'path';
-import { fileURLToPath } from 'url';
+import errorHandlerMiddleware from "./middleware/errorHandlerMiddleware.js";
+import cookieParser from "cookie-parser";
+
+import userRouter from "./routes/userRouter.js";
+import invoiceRouter from "./routes/invoiceRouter.js";
+import authRouter from "./routes/authRouter.js";
+import aiRouter from "./routes/aiRouter.js";
+import path, { dirname } from "path";
+import { fileURLToPath } from "url";
 
 const app: Express = express();
 const port = process.env.PORT || 5100;
@@ -29,26 +32,27 @@ app.use(
   })
 );
 
-if (process.env.NODE_ENV !== 'production') {
-  app.use(morgan('dev'));
+if (process.env.NODE_ENV !== "production") {
+  app.use(morgan("dev"));
 }
 
 // ------------ ROUTES ------------
-app.use('/api/auth', authRouter);
-app.use('/api/users', userRouter);
-app.use('/api/invoices', invoiceRouter);
+app.use("/api/auth", authRouter);
+app.use("/api/users", userRouter);
+app.use("/api/invoices", invoiceRouter);
+app.use("/api/ai", aiRouter);
 
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '/client/dist')));
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "/client/dist")));
   // this is for vite to work
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'client', 'dist', 'index.html'));
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "dist", "index.html"));
   });
 }
 
 // ------------ ERROR HANDLING ------------
-app.use('*', (req, res) => {
-  res.status(404).send({ msg: 'Not found' });
+app.use("*", (req, res) => {
+  res.status(404).send({ msg: "Not found" });
 });
 
 app.use(errorHandlerMiddleware);
@@ -56,7 +60,7 @@ app.use(errorHandlerMiddleware);
 try {
   await mongoose
     .connect(process.env.MONGODB_URI!)
-    .then(() => console.log('connected to mongo'))
+    .then(() => console.log("connected to mongo"))
     .catch((err) => console.error(err));
 
   app.listen(port, () => {

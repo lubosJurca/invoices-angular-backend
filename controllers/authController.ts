@@ -49,7 +49,10 @@ export const registerUser = async (req: Request, res: Response) => {
 
     return res
       .status(200)
-      .send({ message: "User registered OK!", user: userWithoutPassword });
+      .send({
+        message: "Registration was successful",
+        user: userWithoutPassword,
+      });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Server Error" });
@@ -96,7 +99,7 @@ export const loginUser = async (req: Request, res: Response) => {
     });
     return res
       .status(200)
-      .send({ message: "User registered OK!", user: userWithoutPassword });
+      .send({ message: "Login successful!", user: userWithoutPassword });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Something went wrong" });
@@ -110,5 +113,5 @@ export const logoutUser = async (req: Request, res: Response) => {
     httpOnly: true,
     expires: new Date(Date.now()),
   });
-  res.status(200).json({ message: "user logged out" });
+  res.status(200).json({ message: "Logout successful" });
 };
