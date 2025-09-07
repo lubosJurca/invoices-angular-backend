@@ -1,10 +1,10 @@
-import { Request, Response } from "express";
+import { Request, Response } from 'express';
 
-import InvoiceModel from "../models/InvoiceModel";
+import InvoiceModel from '../models/InvoiceModel';
 
 //  ---------------- GET ALL INVOICES ----------------
 export const getAllInvoices = async (req: Request, res: Response) => {
-  const { filter } = req.query;
+  const { filter } = req.query || 'all';
   const page = Number(req.query.page) || 1;
   const limit = Number(req.query.limit) || 10;
   const skip = (page - 1) * limit;
@@ -12,7 +12,7 @@ export const getAllInvoices = async (req: Request, res: Response) => {
   let totalInvoices;
 
   try {
-    if (filter !== "all") {
+    if (filter !== 'all' && filter !== undefined) {
       data = await InvoiceModel.find({ createdBy: req.userId, status: filter })
         .skip(skip)
         .limit(limit);
@@ -20,6 +20,7 @@ export const getAllInvoices = async (req: Request, res: Response) => {
         createdBy: req.userId,
         status: filter,
       });
+      console.log('This one runs');
     } else {
       data = await InvoiceModel.find({
         createdBy: req.userId,
@@ -43,11 +44,11 @@ export const getAllInvoices = async (req: Request, res: Response) => {
       hasPreviousPage,
       data,
       currentPage: page,
-      message: "Invoices fetched successfully",
+      message: 'Invoices fetched successfully',
     });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ message: 'Server Error' });
   }
 };
 
@@ -59,7 +60,7 @@ export const getSingleInvoice = async (req: Request, res: Response) => {
     res.status(200).json(invoice);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ message: 'Server Error' });
   }
 };
 
@@ -71,7 +72,7 @@ export const createInvoice = async (req: Request, res: Response) => {
     res.status(201).json({ invoice });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Server Error: ", error });
+    res.status(500).json({ message: 'Server Error: ', error });
   }
 };
 
@@ -83,17 +84,17 @@ export const editInvoice = async (req: Request, res: Response) => {
     const invoice = await InvoiceModel.findById({ _id: id });
 
     if (!invoice) {
-      return res.status(404).json({ message: "Invoice not found" });
+      return res.status(404).json({ message: 'Invoice not found' });
     }
 
     const updatedInvoice = await InvoiceModel.findByIdAndUpdate(id, req.body, {
       new: true,
     });
 
-    res.status(200).json({ message: "Invoice updated", updatedInvoice });
+    res.status(200).json({ message: 'Invoice updated', updatedInvoice });
   } catch (error) {
-    console.log("Edit invoice error", error);
-    res.status(500).json({ message: "Server Error" });
+    console.log('Edit invoice error', error);
+    res.status(500).json({ message: 'Server Error' });
   }
 };
 
@@ -105,18 +106,18 @@ export const editStatus = async (req: Request, res: Response) => {
     const invoice = await InvoiceModel.findById({ _id: id });
 
     if (!invoice) {
-      return res.status(404).json({ message: "Invoice not found" });
+      return res.status(404).json({ message: 'Invoice not found' });
     }
 
     const updatedInvoice = await InvoiceModel.findByIdAndUpdate(
       id,
-      { status: "paid" },
+      { status: 'paid' },
       { new: true }
     );
-    res.status(200).json({ message: "Invoice status updated", updatedInvoice });
+    res.status(200).json({ message: 'Invoice status updated', updatedInvoice });
   } catch (error) {
-    console.log("Edit invoice error", error);
-    res.status(500).json({ message: "Server Error" });
+    console.log('Edit invoice error', error);
+    res.status(500).json({ message: 'Server Error' });
   }
 };
 
@@ -125,9 +126,9 @@ export const deleteInvoice = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     await InvoiceModel.findByIdAndDelete(id);
-    res.status(200).json({ message: "Invoice deleted" });
+    res.status(200).json({ message: 'Invoice deleted' });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ message: 'Server Error' });
   }
 };
