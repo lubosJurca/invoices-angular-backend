@@ -1,6 +1,5 @@
-import { Request, Response, NextFunction } from 'express';
-
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import { Request, Response, NextFunction } from "express";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
 declare global {
   namespace Express {
@@ -15,10 +14,17 @@ export const verifyToken = async (
   res: Response,
   next: NextFunction
 ) => {
-  const token = req.cookies['auth_token'];
-  // check if token exists, if not => return unauthorized
+  // Get token from Authorization header instead of cookies
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  const token = authHeader.substring(7); // Remove "Bearer " prefix
+
   if (!token) {
-    return res.status(401).json({ message: 'Unauthorized' });
+    return res.status(401).json({ message: "Unauthorized" });
   }
 
   try {
@@ -27,6 +33,6 @@ export const verifyToken = async (
 
     next();
   } catch (error) {
-    return res.status(401).json({ message: 'Unauthorized' });
+    return res.status(401).json({ message: "Unauthorized" });
   }
 };

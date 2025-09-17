@@ -29,7 +29,7 @@ export const registerUser = async (req: Request, res: Response) => {
       email: req.body.email,
     })
       .select("-password")
-      .lean();
+      .lean(); // lean() returns a plain JS object instead of a Mongoose document
 
     // generate token
     const token = jwt.sign(
@@ -41,18 +41,18 @@ export const registerUser = async (req: Request, res: Response) => {
     );
 
     // set token in cookie
-    res.cookie("auth_token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 86400000,
-    });
+    // res.cookie("auth_token", token, {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === "production",
+    //   maxAge: 86400000,
+    //   path: "/",
+    // });
 
-    return res
-      .status(200)
-      .send({
-        message: "Registration was successful",
-        user: userWithoutPassword,
-      });
+    return res.status(200).send({
+      message: "Registration was successful",
+      user: userWithoutPassword,
+      token: token,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Server Error" });
@@ -92,14 +92,19 @@ export const loginUser = async (req: Request, res: Response) => {
       .lean();
 
     // set cookie
-    res.cookie("auth_token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 86400000,
-    });
+    // res.cookie("auth_token", token, {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === "production",
+    //   maxAge: 86400000,
+    //   path: "/",
+    // });
     return res
       .status(200)
-      .send({ message: "Login successful!", user: userWithoutPassword });
+      .send({
+        message: "Login successful!",
+        user: userWithoutPassword,
+        token: token,
+      });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Something went wrong" });
@@ -109,9 +114,11 @@ export const loginUser = async (req: Request, res: Response) => {
 // ------------ LOGOUT USER ------------
 export const logoutUser = async (req: Request, res: Response) => {
   // clear cookie
-  res.cookie("auth_token", "logout", {
+  res.cookie("auth_token", "", {
     httpOnly: true,
-    expires: new Date(Date.now()),
+    secure: process.env.NODE_ENV === "production",
+    expires: new Date(Date.now() - 3600), // Nastaví expiraci na čas v minulosti
+    path: "/",
   });
   res.status(200).json({ message: "Logout successful" });
 };
