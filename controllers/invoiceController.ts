@@ -5,45 +5,29 @@ import InvoiceModel from "../models/InvoiceModel";
 //  ---------------- GET ALL INVOICES ----------------
 export const getAllInvoices = async (req: Request, res: Response) => {
   const { filter } = req.query || "all";
-  const page = Number(req.query.page) || 1;
-  const limit = 10;
-  const skip = (page - 1) * limit;
   let data;
   let totalInvoices;
 
   try {
     if (filter !== "all" && filter !== undefined) {
-      data = await InvoiceModel.find({ createdBy: req.userId, status: filter })
-        .skip(skip)
-        .limit(limit);
+      data = await InvoiceModel.find({ createdBy: req.userId, status: filter });
       totalInvoices = await InvoiceModel.countDocuments({
         createdBy: req.userId,
         status: filter,
       });
-      console.log("This one runs");
     } else {
       data = await InvoiceModel.find({
         createdBy: req.userId,
-      })
-        .skip(skip)
-        .limit(limit);
+      });
 
       totalInvoices = await InvoiceModel.countDocuments({
         createdBy: req.userId,
       });
     }
 
-    const totalPages = Math.ceil(totalInvoices / limit);
-    const hasNextPage = page < totalPages;
-    const hasPreviousPage = page > 1;
-
     res.status(200).json({
       totalInvoices,
-      totalPages,
-      hasNextPage,
-      hasPreviousPage,
       data,
-      currentPage: page,
       message: "Invoices fetched successfully",
     });
   } catch (error) {
