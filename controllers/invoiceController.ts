@@ -53,11 +53,15 @@ export const createInvoice = async (req: Request, res: Response) => {
   try {
     const createdAt = new Date().toISOString();
     const userId = req.userId;
-    const totatPrice = req.body.items.reduce(
-      (acc: number, item: { total: number }) => acc + item.total,
+
+    const totalPrice = req.body.items.reduce(
+      (acc: number, item: { quantity: any; price: any }) => {
+        const itemTotal = item.quantity * item.price;
+        return acc + itemTotal;
+      },
       0
     );
-    req.body.total = +totatPrice;
+    req.body.total = totalPrice;
     req.body.createdAt = createdAt;
     req.body.createdBy = userId;
     req.body.status = 'pending';
