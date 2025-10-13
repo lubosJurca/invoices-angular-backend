@@ -88,11 +88,11 @@ export const editInvoice = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Invoice not found" });
     }
 
-    const updatedInvoice = await InvoiceModel.findByIdAndUpdate(id, req.body, {
+    await InvoiceModel.findByIdAndUpdate(id, req.body, {
       new: true,
     });
 
-    res.status(200).json({ message: "Invoice updated", updatedInvoice });
+    res.status(200).json({ message: "Invoice updated" });
   } catch (error) {
     console.log("Edit invoice error", error);
     res.status(500).json({ message: "Server Error" });
