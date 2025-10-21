@@ -3,12 +3,13 @@
   "version": "1.0.0",
   "type": "module",
   "description": "",
-  "main": "index.js",
+  "main": "server.ts",
   "scripts": {
     "setup-production-app": " npm i --include=dev && cd client && npm i --include=dev && npm run build",
     "dev": " nodemon --exec node --no-warnings=ExperimentalWarning --loader ts-node/esm  server.ts",
     "populate": "nodemon --exec node --no-warnings=ExperimentalWarning --loader ts-node/esm  populate.ts",
-    "start": " node --loader ts-node/esm server.ts"
+    "start": " node --loader ts-node/esm server.ts",
+    "build": "echo 'No build step needed'"
   },
   "keywords": [],
   "author": "Lubos Jurca",
